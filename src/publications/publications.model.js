@@ -1,6 +1,6 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-const PublicationsSchema = new Schema({
+const PublicationsSchema = mongoose.Schema({
     namePublication: {
         type: String,
         required: [true, 'El nombre de la publicación es obligatorio']
@@ -24,4 +24,4 @@ const PublicationsSchema = new Schema({
     }
 });
 
-export default model('Publications', PublicationsSchema);
+export default mongoose.model('Publications', PublicationsSchema);
