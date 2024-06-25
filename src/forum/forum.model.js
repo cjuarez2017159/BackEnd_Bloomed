@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-const ForoSchema =mongoose.Schema({
+const ForoSchema = mongoose.Schema({
     idcomment: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment',
