@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose'
+import mongoose, { Schema } from 'mongoose';
 
 const AdminSchema = mongoose.Schema({
     username: {
@@ -11,4 +11,4 @@ const AdminSchema = mongoose.Schema({
     }
 });
 
-export default model('Admin', AdminSchema);
+export default mongoose.model('Admin', AdminSchema);
