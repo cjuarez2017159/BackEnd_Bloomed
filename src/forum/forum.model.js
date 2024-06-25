@@ -1,6 +1,6 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-const ForoSchema = new Schema({
+const ForoSchema =mongoose.Schema({
     idcomment: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment',
@@ -12,4 +12,4 @@ const ForoSchema = new Schema({
     }
 });
 
-export default model('Foro', ForoSchema);
+export default mongoose.model('Foro', ForoSchema);
