@@ -1,14 +1,21 @@
-import mongoose, { Schema } from 'mongoose';
+
+import mongoose from "mongoose"
 
 const AdminSchema = mongoose.Schema({
     username: {
         type: String,
-        required: [true, 'El nombre de usuario es obligatorio']
+        required: [true, "The username is requiered"]
     },
+
     password: {
         type: String,
-        required: [true, 'La contraseña es obligatoria']
+        required: [true, "The password is required"]
+    },
+    
+    estado:{
+        type: Boolean,
+        default: true
     }
-});
+})
 
-export default mongoose.model('Admin', AdminSchema);
+export default mongoose.model('Admin', AdminSchema)
