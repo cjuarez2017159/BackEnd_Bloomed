@@ -20,7 +20,8 @@ export const login = async (req, res) => {
                         msg: "Bienvenido",
                         userDetails: {
                             Nombre: user.nombre,
-                            token: token
+                            token: token,
+                            role: "user"
                         },
                     });
                 } else {
