@@ -3,12 +3,27 @@ import bcryptjs from "bcryptjs";
 
 export const registerUser = async (req, res) => {
     try {
-        const { nombre, apellido, username, email, password,  fechaNacimiento } = req.body;
-        const user = new User({ nombre, apellido, username, email, password, fechaNacimiento })
+        const { nombre, apellido, username, email, password, fechaNacimiento } = req.body;
+        // Convertir la fecha de nacimiento del formato DD/MM/YYYY a un objeto Date
+        const [day, month, year] = fechaNacimiento.split('/');
+        const birthDate = new Date(year, month - 1, day);
+        // Calcular la edad del usuario
+        const age = calculateAge(birthDate);
+        if (age < 7) {
+            return res.status(400).json({ msg: "Debes tener al menos 7 años para registrarte." });
+        }
+        const user = new User({
+            nombre,
+            apellido,
+            username,
+            email,
+            password,
+            fechaNacimiento: birthDate
+        });
         const salt = bcryptjs.genSaltSync();
         user.password = bcryptjs.hashSync(password, salt);
         await user.save();
-        res.status(201).json({ msg: "User successfully created", user })
+        res.status(201).json({ msg: "User successfully created", user });
     } catch (error) {
         res.status(500).json({ msg: "Error creating user" });
     }
@@ -62,3 +77,13 @@ export const deleteUser = async (req, res) => {
         res.status(500).json({ error: 'Error when deleting user' });
     }
 }
+
+const calculateAge = (birthDate) => {
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+};

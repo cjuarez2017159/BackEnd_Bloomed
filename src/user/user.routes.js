@@ -5,7 +5,7 @@ import { validarCampos } from "../middlewares/validar-campos.js";
 import { existenteEmail, existenteUsername } from "../helpers/db-validators.js";
 import { validarJWT } from "../middlewares/validar-jwt.js";
 
-const router = Router()
+const router = Router();
 
 router.post(
     '/register',
@@ -22,13 +22,13 @@ router.post(
         validarCampos
     ],
     registerUser
-)
+);
 
 router.get(
     '/',
     validarJWT,
     getUser
-)
+);
 
 router.put(
     "/settings/:id",
@@ -38,7 +38,7 @@ router.put(
         validarCampos
     ],
     updateUser
-)
+);
 
 router.delete(
     "/settings/:id",
@@ -48,7 +48,6 @@ router.delete(
         validarCampos
     ],
     deleteUser
-)
-
+);
 
 export default router;

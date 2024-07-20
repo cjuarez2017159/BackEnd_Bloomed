@@ -23,10 +23,9 @@ const UserSchema = Schema({
         required: [true, 'The password is required'],
     },
     fechaNacimiento: {
-        type: String,
+        type: Date,
         required: [true, 'The App needs to know your age'],
     }
 })
-
 
 export default model('User', UserSchema)

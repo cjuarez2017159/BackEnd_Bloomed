@@ -4,22 +4,28 @@ import Admin from '../admin/admin.model.js';
 import { generarJWT } from '../helpers/generate-jwt.js';
 
 export const login = async (req, res) => {
-    const { username, password} = req.body;
+    const { username, password } = req.body;
 
     try {
-        const user = await User.findOne({ username: username});
+        const user = await User.findOne({ username: username });
 
         if (user) {
             const validPassword = await bcryptjs.compare(password, user.password);
             if (validPassword) {
-                const token = await generarJWT(user.id, user.username);
-                return res.status(200).json({
-                    msg: "Login OK!!!",
-                    userDetails: {
-                        Nombre: user.nombre,
-                        token: token
-                    },
-                });
+                const birthDate = new Date(user.fechaNacimiento);
+                const age = calculateAge(birthDate);
+                if (age >= 10) {
+                    const token = await generarJWT(user.id, user.username);
+                    return res.status(200).json({
+                        msg: "Bienvenido",
+                        userDetails: {
+                            Nombre: user.nombre,
+                            token: token
+                        },
+                    });
+                } else {
+                    return res.status(400).json({ msg: "Eres menor de edad, necesitas la ayuda de un adulto para iniciar sesión." });
+                }
             } else {
                 return res.status(400).send("Contraseña incorrecta");
             }
@@ -50,4 +56,14 @@ export const login = async (req, res) => {
         console.log(e);
         res.status(500).send("Comuníquese con el administrador");
     }
+};
+
+const calculateAge = (birthDate) => {
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
 };
