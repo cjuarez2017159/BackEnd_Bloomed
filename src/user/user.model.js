@@ -22,6 +22,10 @@ const UserSchema = Schema({
         type: String,
         required: [true, 'The password is required'],
     },
+    edad: {
+        type: String,
+        required: [true, 'Age is required']
+    },
     fechaNacimiento: {
         type: Date,
         required: [true, 'The App needs to know your age'],

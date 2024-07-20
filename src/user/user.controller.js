@@ -3,23 +3,14 @@ import bcryptjs from "bcryptjs";
 
 export const registerUser = async (req, res) => {
     try {
-        const { nombre, apellido, username, email, password, fechaNacimiento } = req.body;
-        // Convertir la fecha de nacimiento del formato DD/MM/YYYY a un objeto Date
-        const [day, month, year] = fechaNacimiento.split('/');
+        const { nombre, apellido, username, email, password, edad, fechaNacimiento } = req.body;
+        const [day, month, year] = fechaNacimiento.split('/');// Convertir la fecha de nacimiento del formato DD/MM/YYYY a un objeto Date
         const birthDate = new Date(year, month - 1, day);
-        // Calcular la edad del usuario
-        const age = calculateAge(birthDate);
+        const age = calculateAge(birthDate);// Calcular la edad del usuario
         if (age < 7) {
             return res.status(400).json({ msg: "Debes tener al menos 7 años para registrarte." });
         }
-        const user = new User({
-            nombre,
-            apellido,
-            username,
-            email,
-            password,
-            fechaNacimiento: birthDate
-        });
+        const user = new User({nombre, apellido, username, email, password, edad, fechaNacimiento: birthDate});
         const salt = bcryptjs.genSaltSync();
         user.password = bcryptjs.hashSync(password, salt);
         await user.save();
@@ -31,14 +22,14 @@ export const registerUser = async (req, res) => {
 
 export const getUser = async (req = request, res = response) => {
     try {
-        const { nombre, apellido, username, email, fechaNacimiento } = req.query;
+        const { nombre, apellido, username, email, edad, fechaNacimiento } = req.query;
         const filter = {};
         if (nombre) filter.nombre = { $regex: nombre, $options: 'i' };
         if (apellido) filter.apellido = { $regex: apellido, $options: 'i' };
         if (username) filter.username = { $regex: username, $options: 'i' };
         if (email) filter.email = { $regex: email, $options: 'i' };
+        if (edad) filter.edad = { $regex: edad, $options: 'i' };
         if (fechaNacimiento) filter.fechaNacimiento = { $regex: fechaNacimiento, $options: 'i' };
-
         const users = await User.find(filter);
         const total = users.length;
         res.status(200).json({ total, users });
