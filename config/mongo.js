@@ -2,6 +2,7 @@
 
 import mongoose from 'mongoose';
 
+
 export const dbConnection = async () => {
     try{
         mongoose.connection.on('error', () => {
