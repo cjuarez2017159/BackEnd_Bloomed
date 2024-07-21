@@ -23,7 +23,7 @@ const UserSchema = Schema({
         required: [true, 'The password is required'],
     },
     edad: {
-        type: String,
+        type: Number,
         required: [true, 'Age is required']
     },
     fechaNacimiento: {

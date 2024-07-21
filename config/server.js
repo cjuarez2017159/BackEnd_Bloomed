@@ -11,6 +11,7 @@ import { dbConnection } from './mongo.js'
 import Admin from '../src/admin/admin.model.js';
 import userRoutes from '../src/user/user.routes.js'
 import authRoutes from '../src/auth/auth.routes.js'
+import publicationsRoutes from '../src/publications/publications.routes.js';
 
 class Server{
     constructor(){
@@ -18,6 +19,7 @@ class Server{
         this.port = process.env.PORT
         this.userPath = '/bloomed/v1/user';
         this.authPath = '/bloomed/v1/auth';
+        this.publicationsPath = '/bloomed/v1/public'
 
         this.middlewares()
         this.conectarDB()
@@ -40,6 +42,7 @@ class Server{
     routes(){
         this.app.use(this.userPath, userRoutes);
         this.app.use(this.authPath, authRoutes);
+        this.app.use(this.publicationsPath, publicationsRoutes);
     }
 
     async createDefaultAdmin() {

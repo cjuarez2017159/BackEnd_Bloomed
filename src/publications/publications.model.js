@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
 const PublicationsSchema = mongoose.Schema({
     namePublication: {
@@ -13,9 +13,10 @@ const PublicationsSchema = mongoose.Schema({
         type: Date,
         required: [true, 'La fecha es obligatoria']
     },
-    ageRatings: {
+    edad: {
         type: String,
-        required: [true, 'La clasificación por edades es obligatoria']
+        enum: ['+18', '-18'],
+        required: [true, 'La edad es obligatoria']
     },
     idComment: {
         type: mongoose.Schema.Types.ObjectId,
