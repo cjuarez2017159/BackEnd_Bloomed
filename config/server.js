@@ -9,17 +9,23 @@ import path from 'path';
 import { dbConnection } from './mongo.js'
 
 import Admin from '../src/admin/admin.model.js';
-import userRoutes from '../src/user/user.routes.js'
-import authRoutes from '../src/auth/auth.routes.js'
+import userRoutes from '../src/user/user.routes.js';
+import authRoutes from '../src/auth/auth.routes.js';
 import publicationsRoutes from '../src/publications/publications.routes.js';
+import foroRoutes from '../src/forum/forum.routes.js';
+import respuestaRoutes from '../src/respuesta/respuesta.routes.js'
+
 
 class Server{
     constructor(){
         this.app = express()
         this.port = process.env.PORT
+
         this.userPath = '/bloomed/v1/user';
         this.authPath = '/bloomed/v1/auth';
         this.publicationsPath = '/bloomed/v1/public'
+        this.foroPath = '/bloomed/v1/foro'
+        this.respuestaPath = '/bloomed/v1/res'
 
         this.middlewares()
         this.conectarDB()
@@ -40,9 +46,13 @@ class Server{
     }
 
     routes(){
+        
         this.app.use(this.userPath, userRoutes);
         this.app.use(this.authPath, authRoutes);
         this.app.use(this.publicationsPath, publicationsRoutes);
+        this.app.use(this.foroPath, foroRoutes);
+        this.app.use(this.respuestaPath, respuestaRoutes);
+
     }
 
     async createDefaultAdmin() {
