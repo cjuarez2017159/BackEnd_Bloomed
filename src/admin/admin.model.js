@@ -11,7 +11,7 @@ const AdminSchema = mongoose.Schema({
         required: [true, "The password is required"]
     },
     
-    estado:{
+    status:{
         type: Boolean,
         default: true
     }

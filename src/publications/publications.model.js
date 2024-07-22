@@ -18,9 +18,8 @@ const PublicationsSchema = mongoose.Schema({
         enum: ['+18', '-18'],
         required: [true, 'La edad es obligatoria']
     },
-    idComment: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment',
+    comment: {
+        type: String,
         required: true
     }
 });

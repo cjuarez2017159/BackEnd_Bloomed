@@ -1,39 +1,30 @@
 import jwt from 'jsonwebtoken';
-import User from '../user/user.model.js';
-import Admin from '../admin/admin.model.js'
+import Admin from '../admin/admin.model.js';
 
 export const validarJWT = async (req, res, next) => {
     const token = req.header('x-token');
 
     if (!token) {
-        return res.status(401).json({
-            msg: 'No hay token en la petición'
-        });
+        return res.status(401).json({ msg: 'No hay token en la petición' });
     }
 
     try {
-        const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
+        const { uid, role } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
 
-        const user = await User.findById(uid);
-
-        if (!user) {
-            return res.status(401).json({
-                msg: 'Token no válido - usuario no encontrado'
-            });
+        if (role === 'admin') {
+            const admin = await Admin.findById(uid);
+            if (!admin || !admin.status) {
+                return res.status(401).json({ msg: 'Token no válido - administrador desactivado o no existe' });
+            }
+            req.user = admin;
+            req.user.role = 'admin';
+        } else {
+            return res.status(401).json({ msg: 'Token no válido - rol desconocido' });
         }
 
-        if (!user.status) {
-            return res.status(401).json({
-                msg: 'Token no válido - usuario con estado:false'
-            });
-        }
-
-        req.usuario = user;
         next();
     } catch (error) {
-        console.error(error);
-        res.status(401).json({
-            msg: 'Token no válido'
-        });
+        console.error('Error en validarJWT:', error);
+        res.status(401).json({ msg: 'Token no válido' });
     }
-}
+};
