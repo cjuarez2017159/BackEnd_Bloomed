@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import Admin from '../admin/admin.model.js';
+import User from '../user/user.model.js';  // Asegúrate de importar el modelo User
 
 export const validarJWT = async (req, res, next) => {
     const token = req.header('x-token');
@@ -18,6 +19,13 @@ export const validarJWT = async (req, res, next) => {
             }
             req.user = admin;
             req.user.role = 'admin';
+        } else if (role === 'user') {
+            const user = await User.findById(uid);
+            if (!user || !user.status) {
+                return res.status(401).json({ msg: 'Token no válido - usuario desactivado o no existe' });
+            }
+            req.user = user;
+            req.user.role = 'user';
         } else {
             return res.status(401).json({ msg: 'Token no válido - rol desconocido' });
         }

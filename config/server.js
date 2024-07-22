@@ -15,6 +15,7 @@ import publicationsRoutes from '../src/publications/publications.routes.js';
 import foroRoutes from '../src/forum/forum.routes.js';
 import respuestaRoutes from '../src/respuesta/respuesta.routes.js';
 import videoRoutes from '../src/video/video.routes.js';
+import commentRoutes from '../src/comment/comment.routes.js';
 
 
 class Server{
@@ -28,6 +29,7 @@ class Server{
         this.foroPath = '/bloomed/v1/foro'
         this.respuestaPath = '/bloomed/v1/res'
         this.videoPath = '/bloomed/v1/videos'
+        this.commentPath = '/bloomed/v1/comment'
 
         this.middlewares()
         this.conectarDB()
@@ -55,6 +57,8 @@ class Server{
         this.app.use(this.foroPath, foroRoutes);
         this.app.use(this.respuestaPath, respuestaRoutes);
         this.app.use(this.videoPath, videoRoutes);
+        this.app.use(this.commentPath, commentRoutes);
+
     }
 
     async createDefaultAdmin() {

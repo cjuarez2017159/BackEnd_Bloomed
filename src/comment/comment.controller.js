@@ -6,20 +6,19 @@ import User from "../user/user.model.js";
 
 export const postcomment = async (req, res = response) => {
     const { comentario, publicationId } = req.body;
-    const token = req.header('x-token');
 
     try {
-        const decoded = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
-        const userId = decoded.uid;
+        const user = req.user;
 
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(401).json({ msg: 'Usuario no autorizado' });
+        if (user.role !== 'user') {
+            return res.status(403).json({ msg: 'Solo los usuarios con rol de "user" pueden comentar' });
         }
 
         const comment = new Comment({
+            userId: user._id,
             username: user.username,
             comentario: comentario,
+            publicationId: publicationId,
             date: new Date()
         });
 
@@ -38,13 +37,15 @@ export const postcomment = async (req, res = response) => {
             comment
         });
     } catch (error) {
-        res.status(401).json({ msg: 'Token no válido' });
+        res.status(500).json({ msg: 'Error al agregar el comentario' });
     }
 }
 
+
+
 export const getComments = async (req, res = response) => {
     try {
-        const comments = await Comment.find();
+        const comments = await Comment.find().populate('userId', 'username').populate('publicationId', 'title');
         res.status(200).json({ comments });
     } catch (error) {
         res.status(500).json({ msg: 'Error al obtener los comentarios' });
@@ -55,7 +56,7 @@ export const getCommentById = async (req, res = response) => {
     const { id } = req.params;
 
     try {
-        const comment = await Comment.findById(id);
+        const comment = await Comment.findById(id).populate('userId', 'username').populate('publicationId', 'title');
         if (!comment) {
             return res.status(404).json({ msg: 'Comentario no encontrado' });
         }
@@ -67,7 +68,12 @@ export const getCommentById = async (req, res = response) => {
 
 export const updateComment = async (req, res = response) => {
     const { id } = req.params;
-    const { comentario, ...resto } = req.body;
+    const { comentario, publicationId, ...resto } = req.body;
+
+    // Verificar si se intenta actualizar el publicationId
+    if (publicationId) {
+        return res.status(400).json({ msg: 'No se puede actualizar el ID de la publicación' });
+    }
 
     try {
         const updatedComment = await Comment.findByIdAndUpdate(id, { comentario, ...resto }, { new: true });
