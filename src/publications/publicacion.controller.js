@@ -17,19 +17,13 @@ const verificarAdmin = async (token) => {
 
 export const publicationsGet = async (req, res) => {
     const { limite = 10, desde = 0 } = req.query;
-    const token = req.header('x-token');
 
     console.log('Token recibido:', token);
 
     try {
-        const admin = await verificarAdmin(token);
-        console.log('Admin verificado:', admin);
-
-        const query = {}; // Cambiar según la lógica que quieras para los administradores
-
         const [total, publications] = await Promise.all([
-            Publications.countDocuments(query),
-            Publications.find(query)
+            Publications.countDocuments({}),
+            Publications.find({})
                 .skip(Number(desde))
                 .limit(Number(limite))
         ]);
@@ -39,14 +33,13 @@ export const publicationsGet = async (req, res) => {
             publications
         });
     } catch (error) {
-        console.error('Error en publicationsGet:', error);
-        res.status(500).json({ msg: 'Error interno del servidor' });
+        res.status(500).json({ msg: 'Error al obtener publicaciones' });
     }
 };
 
 export const publicationsPost = async (req, res) => {
-    const { namePublication, author, date, edad, comment } = req.body;
-    const publication = new Publications({ namePublication, author, date, edad, comment });
+    const { namePublication, author, descripcion, date, edad, idComment } = req.body;
+    const publication = new Publications({ namePublication, author,descripcion, date, edad, idComment });
 
     const token = req.header('x-token');
 
