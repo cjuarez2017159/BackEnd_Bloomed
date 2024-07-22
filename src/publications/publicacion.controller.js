@@ -15,31 +15,30 @@ const verificarAdmin = async (token) => {
     return admin;
 };
 
-export const publicationsGet = async (req, res) => {
+export const publicationsGet = async (req = request, res = response) => {
     const { limite = 10, desde = 0 } = req.query;
 
-    console.log('Token recibido:', token);
-
     try {
-        const [total, publications] = await Promise.all([
-            Publications.countDocuments({}),
-            Publications.find({})
+        const [total, publicacion] = await Promise.all([
+            Publications.countDocuments(),
+            Publications.find()
                 .skip(Number(desde))
                 .limit(Number(limite))
         ]);
 
         res.status(200).json({
             total,
-            publications
+            publicacion
         });
     } catch (error) {
-        res.status(500).json({ msg: 'Error al obtener publicaciones' });
+        res.status(500).json({ msg: 'Error al obtener las publicaciones' });
     }
-};
+}
+
 
 export const publicationsPost = async (req, res) => {
-    const { namePublication, author, descripcion, date, edad, idComment } = req.body;
-    const publication = new Publications({ namePublication, author,descripcion, date, edad, idComment });
+    const { namePublication, author, descripcion, date, edad } = req.body;
+    const publication = new Publications({ namePublication, author,descripcion, date, edad });
 
     const token = req.header('x-token');
 

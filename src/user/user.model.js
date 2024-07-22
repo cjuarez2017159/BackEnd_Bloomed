@@ -31,7 +31,7 @@ const UserSchema = Schema({
         required: [true, 'The App needs to know your age'],
     },
 
-    estado: {
+    status: {
         type: Boolean,
         default: true
     }
