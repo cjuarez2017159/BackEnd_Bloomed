@@ -19,7 +19,7 @@ export const login = async (req, res) => {
                     return res.status(200).json({
                         msg: "Bienvenido",
                         userDetails: {
-                            Nombre: user.nombre,
+                            username: user.username,
                             token: token,
                             role: "user"
                         },
