@@ -23,7 +23,7 @@ class Server{
 
         this.userPath = '/bloomed/v1/user';
         this.authPath = '/bloomed/v1/auth';
-        this.publicationsPath = '/bloomed/v1/public'
+        this.publicationsPath = '/bloomed/v1/publications';
         this.foroPath = '/bloomed/v1/foro'
         this.respuestaPath = '/bloomed/v1/res'
 

@@ -9,8 +9,9 @@ router.post(
     [
         check('namePublication', 'El nombre de la publicación es obligatorio').not().isEmpty(),
         check('author', 'El autor es obligatorio').not().isEmpty(),
+        check('descripcion','La descripcion es obligatoria').not().isEmpty(),
         check('date', 'La fecha es obligatoria').isDate(),
-        check('edad', 'La edad es obligatoria y debe ser +18 o -18').isIn(['+18', '-18']),
+        check('edad', 'La edad es obligatoria y debe ser +18 o -18').not().isEmpty(),
         check('idComment', 'El id de comentario es obligatorio').not().isEmpty().isMongoId(),
     ],
     publicationsPost

@@ -9,6 +9,12 @@ const PublicationsSchema = mongoose.Schema({
         type: String,
         required: [true, 'El autor es obligatorio']
     },
+
+    descripcion: {
+        type: String,
+        require: [true, 'la descripcion es obligatorio']
+    },
+
     date: {
         type: Date,
         required: [true, 'La fecha es obligatoria']

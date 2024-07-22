@@ -6,28 +6,11 @@ import jwt from "jsonwebtoken";
 
 export const publicationsGet = async (req, res) => {
     const { limite = 10, desde = 0 } = req.query;
-    const token = req.header('x-token');
 
     try {
-        const decoded = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
-        const userId = decoded.uid;
-
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(401).json({ msg: 'Usuario no autorizado' });
-        }
-
-        const userAge = user.edad;
-        const query = {
-            $or: [
-                { edad: { $exists: false } },
-                { edad: { $lte: userAge } }
-            ]
-        };
-
         const [total, publications] = await Promise.all([
-            Publications.countDocuments(query),
-            Publications.find(query)
+            Publications.countDocuments({}),
+            Publications.find({})
                 .skip(Number(desde))
                 .limit(Number(limite))
         ]);
@@ -37,13 +20,13 @@ export const publicationsGet = async (req, res) => {
             publications
         });
     } catch (error) {
-        res.status(401).json({ msg: 'Token no válido' });
+        res.status(500).json({ msg: 'Error al obtener publicaciones' });
     }
 }
 
 export const publicationsPost = async (req, res) => {
-    const { namePublication, author, date, edad, idComment } = req.body;
-    const publication = new Publications({ namePublication, author, date, edad, idComment });
+    const { namePublication, author, descripcion, date, edad, idComment } = req.body;
+    const publication = new Publications({ namePublication, author,descripcion, date, edad, idComment });
 
     const token = req.header('x-token');
 
