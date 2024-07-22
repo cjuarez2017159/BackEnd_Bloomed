@@ -42,20 +42,28 @@ export const getUser = async (req = request, res = response) => {
 export const updateUser = async (req, res = response) => {
     try {
         const { id } = req.params;
-        const { _id, password, ...remain } = req.body;
+        const { _id, password, edad, email, username, ...remain } = req.body;
         const user = await User.findOne({ _id: id });
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
+        }
+        if (username) {
+            const existingUser = await User.findOne({ username });
+            if (existingUser && existingUser._id.toString() !== id) {
+                return res.status(400).json({ error: 'Username already exists' });
+            }
+            remain.username = username;
         }
         if (password) {
             const salt = bcryptjs.genSaltSync();
             remain.password = bcryptjs.hashSync(password, salt);
         }
+
         await User.findByIdAndUpdate(id, remain);
         const updatedUser = await User.findOne({ _id: id });
         res.status(200).json({ msg: 'User has been updated', user: updatedUser });
     } catch (error) {
-        console.error('Error getting users:', error);
+        console.error('Error updating user:', error);
         res.status(500).json({ error: 'Error when updating user' });
     }
 }

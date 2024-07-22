@@ -31,10 +31,10 @@ router.get(
 );
 
 router.put(
-    "/settings/:id",
+    '/settings/:id',
     [
         validarJWT,
-        check("id", "This is an invalid id").isMongoId(),
+        check('id', 'This is an invalid id').isMongoId(),
         validarCampos
     ],
     updateUser

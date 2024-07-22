@@ -8,28 +8,22 @@ export const validarJWT = async (req, res, next) => {
     if (!token) {
         return res.status(401).json({ msg: 'No hay token en la petición' });
     }
-
     try {
-        const { uid, role } = jwt.verify(token, process.env.SECRETORPRIVATEKEY);
-
-        if (role === 'admin') {
-            const admin = await Admin.findById(uid);
-            if (!admin || !admin.status) {
-                return res.status(401).json({ msg: 'Token no válido - administrador desactivado o no existe' });
-            }
-            req.user = admin;
-            req.user.role = 'admin';
-        } else if (role === 'user') {
-            const user = await User.findById(uid);
-            if (!user || !user.status) {
-                return res.status(401).json({ msg: 'Token no válido - usuario desactivado o no existe' });
-            }
-            req.user = user;
-            req.user.role = 'user';
-        } else {
-            return res.status(401).json({ msg: 'Token no válido - rol desconocido' });
+        const { uid } = jwt.verify(token, process.env.PRIVATE_SECRET_KEY);// Verifica el token utilizando el secreto JWT  
+        const user = await User.findById(uid);// Busca el usuario en la base de datos por el UID
+        if (!user) {// Verifica que el usuario exista
+            return res.status(401).json({
+                msg: 'Token no válido - usuario no encontrado'
+            });
+        }
+        if (!user.status) {                // Verifica que el usuario esté activo
+            return res.status(401).json({
+                msg: 'Token no válido - usuario con estado:false'
+            });
         }
 
+        // Adjunta el usuario a la solicitud
+        req.usuario = user;
         next();
     } catch (error) {
         console.error('Error en validarJWT:', error);
